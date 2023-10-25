@@ -13,8 +13,15 @@ if ($entityBody->email && $entityBody->password) {
     $User = new UserController();
 
     $result = $User->Login($conObj, $entityBody->email, $entityBody->password);
+
     header('Content-Type: application/json; charset=utf-8');
-    print_r($result);
+    if (mysqli_num_rows($result) == 0) {
+        http_response_code(404);
+        print_r(json_encode(["error" => "Invalid credentials"]));
+    } else {
+        http_response_code(200);
+        print_r(json_encode($result->fetch_assoc()));
+    }
 } else {
     header('Content-Type: application/json; charset=utf-8');
     http_response_code(404);
