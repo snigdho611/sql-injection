@@ -6,6 +6,7 @@
         <style>
             body {
                 margin: 0;
+                font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
             }
 
             .banner {
@@ -53,10 +54,15 @@
                 background-color: beige;
                 color: purple;
                 font-size: 17.5px;
-                width: max-content;
+                width: fit-content;
                 margin: 0 auto;
                 display: flex;
                 border: none;
+            }
+
+            #msg {
+                grid-column: span 2;
+                text-align: center;
             }
         </style>
         <title>Document</title>
@@ -73,13 +79,14 @@
             <label for="password">Password:</label>
             <input type="text" name="password" id="password" value="Admin@123" oninput="onKeyPress()" />
             <input type="button" value="Log in" onclick="return onLogin()" />
+            <span id="msg"></span>
         </form>
         <script>
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             document.getElementById(
                 "code"
-            ).innerHTML = `Query: SELECT * FROM users WHERE email = '${email}' $email AND password = '${password}'`;
+            ).innerHTML = `Query: SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
 
             function onLogin() {
                 const email = document.getElementById("email").value;
@@ -93,13 +100,24 @@
                         email: email,
                         password: password,
                     }),
-                });
+                })
+                    .then((res) => res.json())
+                    .then((json) => {
+                        if (json.error) {
+                            document.getElementById("msg").innerHTML = "Invalid credentials";
+                        } else {
+                            document.getElementById("msg").innerHTML = "Successfully logged in";
+                        }
+                    })
+                    .catch((error) => {
+                        document.getElementById("msg").innerHTML = "Something went wrong";
+                    });
             }
 
             function onKeyPress() {
                 const email = document.getElementById("email").value;
                 const password = document.getElementById("password").value;
-                const query = `Query: SELECT * FROM users WHERE email = '${email}' $email AND password = '${password}'`;
+                const query = `Query: SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
                 document.getElementById("code").innerHTML = query;
             }
         </script>
