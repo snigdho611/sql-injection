@@ -5,15 +5,12 @@ include("../../model/user.php");
 include("../../controller/UserController.php");
 
 $entityBody = json_decode(file_get_contents('php://input'));
-// print_r($entityBody->email);
+
 if ($entityBody->email && $entityBody->password) {
-    // print_r("Successfully received email and password");
     $databaseObj = new Database();
     $conObj = $databaseObj->connect();
     $User = new UserController();
-
     $result = $User->Login($conObj, $entityBody->email, $entityBody->password);
-
     header('Content-Type: application/json; charset=utf-8');
     if (mysqli_num_rows($result) == 0) {
         http_response_code(404);
